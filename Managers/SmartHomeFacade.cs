@@ -1,39 +1,22 @@
 ﻿using SmartHouseApp.Models;
-using System.Linq;
 
 namespace SmartHouseApp.Managers
 {
      public class SmartHomeFacade
      {
-          private SmartHomeManager _manager;
+          private SmartHomeManager manager = SmartHomeManager.Instance;
 
-          public SmartHomeFacade()
+          public void AddRoom(string name)
           {
-               _manager = SmartHomeManager.Instance;
-          }
-
-          public void AddRoom(string roomName)
-          {
-               var room = new Room(roomName);
-               _manager.AddRoom(room);
+               manager.AddRoom(new Room(name));
           }
 
           public void AddDeviceToRoom(string roomName, Device device)
           {
-               var room = _manager.Rooms.FirstOrDefault(r => r.Name == roomName);
+               var room = manager.Rooms.Find(r => r.Name == roomName);
                room?.AddDevice(device);
           }
 
-          public void TurnAllOn(string roomName)
-          {
-               var room = _manager.Rooms.FirstOrDefault(r => r.Name == roomName);
-               room?.TurnAllOn();
-          }
-
-          public int GetDeviceCount(string roomName)
-          {
-               var room = _manager.Rooms.FirstOrDefault(r => r.Name == roomName);
-               return room?.Devices.Count ?? 0;
-          }
+          public SmartHomeManager GetManager() => manager;
      }
 }

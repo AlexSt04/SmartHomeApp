@@ -18,12 +18,7 @@ namespace SmartHouseApp.Managers
                }
           }
 
-          public List<Room> Rooms { get; set; }
-
-          private SmartHomeManager()
-          {
-               Rooms = new List<Room>();
-          }
+          public List<Room> Rooms { get; set; } = new();
 
           public void AddRoom(Room room)
           {
