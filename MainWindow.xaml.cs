@@ -1,12 +1,16 @@
-﻿using System.Windows;
-using SmartHouseApp.Models;
-using SmartHouseApp.Managers;
+﻿using SmartHouseApp.Builders;
 using SmartHouseApp.Factories;
-using SmartHouseApp.Builders;
 using SmartHouseApp.Managers;
+using SmartHouseApp.Managers;
+using SmartHouseApp.Models;
+using SmartHouseApp.Patterns.Behavioral.ChainOfResponsibility;
+using SmartHouseApp.Patterns.Behavioral.State;
+using SmartHouseApp.Patterns.Behavioral.TemplateMethod;
+using SmartHouseApp.Patterns.Behavioral.Visitor;
 using SmartHouseApp.Patterns.Decorator;
-using SmartHouseApp.Patterns.Proxy;
 using SmartHouseApp.Patterns.Flyweight;
+using SmartHouseApp.Patterns.Proxy;
+using System.Windows;
 
 namespace SmartHouseApp
 {
@@ -19,22 +23,27 @@ namespace SmartHouseApp
 
           private void Test_Click(object sender, RoutedEventArgs e)
           {
-               var manager = SmartHomeManager.Instance;
+               // Chain
+               var power = new PowerHandler();
+               var security = new SecurityHandler();
+               power.SetNext(security);
+               power.Handle("SECURITY");
 
-               var light = DeviceFlyweightFactory.GetLight("Kitchen");
+               // State
+               var context = new DeviceContext();
+               context.State = new OffState();
+               context.Request();
+               context.Request();
 
-               var proxy = new DeviceProxy(light, true);
+               // Template
+               var light = new LightTemplate();
+               light.Execute();
 
-               var decorated = new NotificationDecorator(proxy);
+               // Visitor
+               var device = new LightDevice();
+               device.Accept(new StatusVisitor());
 
-               var room = new Room("Kitchen");
-               room.AddDevice(decorated);
-
-               manager.AddRoom(room);
-
-               decorated.TurnOn();
-
-               MessageBox.Show("Lab 5 OK");
+               MessageBox.Show("Lab 7 OK");
           }
 
 
