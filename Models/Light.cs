@@ -15,5 +15,10 @@
           {
                IsOn = false;
           }
+
+          public override Device Clone()
+          {
+               return new Light(this.Room);
+          }
      }
 }

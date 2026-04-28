@@ -11,5 +11,13 @@
 
           public override void TurnOn() { }
           public override void TurnOff() { }
+
+          public override Device Clone()
+          {
+               return new Thermostat(this.Room)
+               {
+                    Temperature = this.Temperature
+               };
+          }
      }
 }

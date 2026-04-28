@@ -2,6 +2,8 @@
 using SmartHouseApp.Models;
 using SmartHouseApp.Managers;
 using SmartHouseApp.Factories;
+using SmartHouseApp.Builders;
+using SmartHouseApp.Managers;
 
 namespace SmartHouseApp
 {
@@ -14,23 +16,27 @@ namespace SmartHouseApp
 
           private void Test_Click(object sender, RoutedEventArgs e)
           {
-               var manager = new SmartHomeManager();
+               var manager = SmartHomeManager.Instance;
 
-               var room = new Room("Living Room");
+               // Builder creeaza camera
+               var builder = new RoomBuilder();
 
-               // alegem fabrica
-               ISmartHomeFactory factory = new PremiumSmartHomeFactory();
-
-               // cream device-uri fara new
-               var light = factory.CreateLight("Living Room");
-               var thermostat = factory.CreateThermostat("Living Room");
-
-               room.AddDevice(light);
-               room.AddDevice(thermostat);
+               var room = builder
+                   .CreateRoom("Bedroom")
+                   .AddLight()
+                   .AddThermostat()
+                   .AddDoorLock()
+                   .Build();
 
                manager.AddRoom(room);
 
-               MessageBox.Show("Devices: " + room.Devices.Count);
+               // Prototype (clone)
+               var clonedDevice = room.Devices[0].Clone();
+
+               MessageBox.Show("Room devices: " + room.Devices.Count +
+                               "\nCloned: " + clonedDevice.Name);
           }
+
+
      }
 }

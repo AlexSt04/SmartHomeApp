@@ -15,5 +15,10 @@
           {
                IsLocked = false;
           }
+
+          public override Device Clone()
+          {
+               return new DoorLock(this.Room);
+          }
      }
 }
