@@ -4,6 +4,9 @@ using SmartHouseApp.Managers;
 using SmartHouseApp.Factories;
 using SmartHouseApp.Builders;
 using SmartHouseApp.Managers;
+using SmartHouseApp.Patterns.Decorator;
+using SmartHouseApp.Patterns.Proxy;
+using SmartHouseApp.Patterns.Flyweight;
 
 namespace SmartHouseApp
 {
@@ -16,20 +19,22 @@ namespace SmartHouseApp
 
           private void Test_Click(object sender, RoutedEventArgs e)
           {
-               var facade = new SmartHomeFacade();
+               var manager = SmartHomeManager.Instance;
 
-               facade.AddRoom("Kitchen");
+               var light = DeviceFlyweightFactory.GetLight("Kitchen");
 
-               facade.AddDeviceToRoom("Kitchen", new Light("Kitchen"));
-               facade.AddDeviceToRoom("Kitchen", new Thermostat("Kitchen"));
+               var proxy = new DeviceProxy(light, true);
 
-               // Adapter
-               var sensor = new TemperatureSensorAdapter("Kitchen");
-               facade.AddDeviceToRoom("Kitchen", sensor);
+               var decorated = new NotificationDecorator(proxy);
 
-               facade.TurnAllOn("Kitchen");
+               var room = new Room("Kitchen");
+               room.AddDevice(decorated);
 
-               MessageBox.Show("Devices: " + facade.GetDeviceCount("Kitchen"));
+               manager.AddRoom(room);
+
+               decorated.TurnOn();
+
+               MessageBox.Show("Lab 5 OK");
           }
 
 

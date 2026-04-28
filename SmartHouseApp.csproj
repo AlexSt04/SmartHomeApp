@@ -22,10 +22,6 @@
     <Folder Include="Patterns\Structural\Adapter\" />
     <Folder Include="Patterns\Structural\Composite\" />
     <Folder Include="Patterns\Structural\Facade\" />
-    <Folder Include="Patterns\Structural\Flyweight\" />
-    <Folder Include="Patterns\Structural\Decorator\" />
-    <Folder Include="Patterns\Structural\Bridge\" />
-    <Folder Include="Patterns\Structural\Proxy\" />
     <Folder Include="Views\Pages\" />
   </ItemGroup>
 
