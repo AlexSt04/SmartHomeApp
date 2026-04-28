@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using SmartHouseApp.Models;
 using SmartHouseApp.Managers;
+using SmartHouseApp.Factories;
 
 namespace SmartHouseApp
 {
@@ -16,11 +17,20 @@ namespace SmartHouseApp
                var manager = new SmartHomeManager();
 
                var room = new Room("Living Room");
-               room.AddDevice(new Light("Living Room"));
+
+               // alegem fabrica
+               ISmartHomeFactory factory = new PremiumSmartHomeFactory();
+
+               // cream device-uri fara new
+               var light = factory.CreateLight("Living Room");
+               var thermostat = factory.CreateThermostat("Living Room");
+
+               room.AddDevice(light);
+               room.AddDevice(thermostat);
 
                manager.AddRoom(room);
 
-               MessageBox.Show("Room added: " + manager.Rooms.Count);
+               MessageBox.Show("Devices: " + room.Devices.Count);
           }
      }
 }
