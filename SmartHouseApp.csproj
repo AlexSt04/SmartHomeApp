@@ -8,4 +8,28 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+    <Folder Include="Factories\" />
+    <Folder Include="Builders\" />
+    <Folder Include="Patterns\Behavioral\Command\" />
+    <Folder Include="Patterns\Behavioral\Memento\" />
+    <Folder Include="Patterns\Behavioral\Iterator\" />
+    <Folder Include="Patterns\Behavioral\ChainOfResponsability\" />
+    <Folder Include="Patterns\Behavioral\Mediator\" />
+    <Folder Include="Patterns\Behavioral\Visitor\" />
+    <Folder Include="Patterns\Behavioral\TemplateMethod\" />
+    <Folder Include="Patterns\Behavioral\State\" />
+    <Folder Include="Patterns\Behavioral\Observer\" />
+    <Folder Include="Patterns\Behavioral\Strategy\" />
+    <Folder Include="Patterns\Structural\Adapter\" />
+    <Folder Include="Patterns\Structural\Composite\" />
+    <Folder Include="Patterns\Structural\Facade\" />
+    <Folder Include="Patterns\Structural\Flyweight\" />
+    <Folder Include="Patterns\Structural\Decorator\" />
+    <Folder Include="Patterns\Structural\Bridge\" />
+    <Folder Include="Patterns\Structural\Proxy\" />
+    <Folder Include="Views\Pages\" />
+  </ItemGroup>
+
 </Project>
