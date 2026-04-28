@@ -17,5 +17,21 @@ namespace SmartHouseApp.Models
           {
                Devices.Add(device);
           }
+
+          public void TurnAllOn()
+          {
+               foreach (var device in Devices)
+               {
+                    device.TurnOn();
+               }
+          }
+
+          public void TurnAllOff()
+          {
+               foreach (var device in Devices)
+               {
+                    device.TurnOff();
+               }
+          }
      }
 }

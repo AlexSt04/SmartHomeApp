@@ -16,25 +16,20 @@ namespace SmartHouseApp
 
           private void Test_Click(object sender, RoutedEventArgs e)
           {
-               var manager = SmartHomeManager.Instance;
+               var facade = new SmartHomeFacade();
 
-               // Builder creeaza camera
-               var builder = new RoomBuilder();
+               facade.AddRoom("Kitchen");
 
-               var room = builder
-                   .CreateRoom("Bedroom")
-                   .AddLight()
-                   .AddThermostat()
-                   .AddDoorLock()
-                   .Build();
+               facade.AddDeviceToRoom("Kitchen", new Light("Kitchen"));
+               facade.AddDeviceToRoom("Kitchen", new Thermostat("Kitchen"));
 
-               manager.AddRoom(room);
+               // Adapter
+               var sensor = new TemperatureSensorAdapter("Kitchen");
+               facade.AddDeviceToRoom("Kitchen", sensor);
 
-               // Prototype (clone)
-               var clonedDevice = room.Devices[0].Clone();
+               facade.TurnAllOn("Kitchen");
 
-               MessageBox.Show("Room devices: " + room.Devices.Count +
-                               "\nCloned: " + clonedDevice.Name);
+               MessageBox.Show("Devices: " + facade.GetDeviceCount("Kitchen"));
           }
 
 
