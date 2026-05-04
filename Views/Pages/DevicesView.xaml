@@ -6,35 +6,47 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+
     <Grid>
         <StackPanel>
+            <!-- Global Add Device Toolbar -->
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock Text="Quick Add: " VerticalAlignment="Center" Margin="0,0,10,0" Foreground="White" FontWeight="Bold"/>
+                    <TextBox Text="{Binding NewName}" Width="150" Margin="0,0,10,0" Tag="Name..."/>
+                    <ComboBox ItemsSource="{Binding DeviceTypes}" SelectedItem="{Binding SelectedType}" Width="120" Margin="0,0,10,0" VerticalContentAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding Rooms}" SelectedItem="{Binding SelectedRoom}" Width="120" Margin="0,0,10,0" VerticalContentAlignment="Center"/>
+                    <Button Content="+ Add to House" Command="{Binding AddDeviceCommand}" Width="130"/>
+                </StackPanel>
+            </Border>
+
             <!-- Action Buttons -->
             <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                <Button Content="🔄 Refresh" Command="{Binding RefreshCommand}" Style="{StaticResource {x:Type Button}}"/>
-                <Button Content="✓ All ON" Command="{Binding ToggleAllCommand}" Style="{StaticResource SecondaryButton}" Margin="15,0"/>
-                <Button Content="✕ All OFF" Command="{Binding ToggleAllCommand}" Style="{StaticResource SecondaryButton}"/>
+                <Button Content="🔄 Refresh All" Command="{Binding RefreshCommand}" Style="{StaticResource {x:Type Button}}"/>
+                <Button Content="✓ Master ON" Command="{Binding ToggleAllCommand}" Style="{StaticResource SecondaryButton}" Margin="15,0"/>
+                <Button Content="✕ Master OFF" Command="{Binding ToggleAllCommand}" Style="{StaticResource SecondaryButton}"/>
             </StackPanel>
             
             <!-- Device List -->
-            <ScrollViewer VerticalScrollBarVisibility="Auto" Height="500">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Height="450">
                 <ItemsControl ItemsSource="{Binding AllDevices}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Style="{StaticResource CardStyle}" Height="80" Margin="0,0,0,10">
+                            <Border Style="{StaticResource CardStyle}" MinHeight="80" Margin="0,0,0,10">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="60"/>
                                         <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="200"/>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     
                                     <!-- Icon -->
-                                    <TextBlock Grid.Column="0" 
-                                               Text="{Binding Icon}" 
-                                               FontSize="28"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Center"/>
+                                    <TextBlock Grid.Column="0" Text="{Binding Icon}" FontSize="32" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                     
                                     <!-- Info -->
                                     <StackPanel Grid.Column="1" Margin="15,0" VerticalAlignment="Center">
@@ -42,20 +54,17 @@
                                         <TextBlock Text="{Binding Room}" Style="{StaticResource SmallText}" Margin="0,2,0,0"/>
                                     </StackPanel>
                                     
+                                    <!-- Temperature Control (Visible only for Thermostats/AC) -->
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Center" Visibility="{Binding IsTemperatureControlVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock Text="{Binding Temperature, StringFormat='Set Temp: {}{0}°C'}" HorizontalAlignment="Center" Style="{StaticResource SmallText}"/>
+                                        <Slider Minimum="0" Maximum="30" Value="{Binding Temperature}" Margin="10,5" IsSnapToTickEnabled="True" TickFrequency="1"/>
+                                    </StackPanel>
+                                    
                                     <!-- Status -->
-                                    <TextBlock Grid.Column="2" 
-                                               Text="{Binding Status}"
-                                               Foreground="{Binding StatusColor}"
-                                               FontWeight="Bold"
-                                               VerticalAlignment="Center"
-                                               Margin="0,0,25,0"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding Status}" Foreground="{Binding StatusColor}" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,25,0"/>
                                     
                                     <!-- Action -->
-                                    <Button Grid.Column="3" 
-                                            Content="{Binding ActionButtonText}"
-                                            Command="{Binding ToggleCommand}"
-                                            Padding="20,8"
-                                            VerticalAlignment="Center"/>
+                                    <Button Grid.Column="4" Content="{Binding ActionButtonText}" Command="{Binding ToggleCommand}" Padding="20,8" VerticalAlignment="Center"/>
                                 </Grid>
                             </Border>
                         </DataTemplate>

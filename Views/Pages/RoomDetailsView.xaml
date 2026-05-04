@@ -6,6 +6,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+
     <Grid>
         <StackPanel>
             <!-- Header -->
@@ -23,10 +27,13 @@
             <!-- Device Controls -->
             <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Text="Add Device: " VerticalAlignment="Center" Margin="0,0,10,0"/>
-                    <Button Content="+ Light" Command="{Binding AddDeviceCommand}" CommandParameter="Light" Margin="5,0"/>
-                    <Button Content="+ Thermostat" Command="{Binding AddDeviceCommand}" CommandParameter="Thermostat" Margin="5,0"/>
-                    <Button Content="+ Door Lock" Command="{Binding AddDeviceCommand}" CommandParameter="DoorLock" Margin="5,0"/>
+                    <TextBlock Text="Add Device: " VerticalAlignment="Center" Margin="0,0,10,0" Foreground="White"/>
+                    
+                    <TextBox Text="{Binding NewDeviceName, UpdateSourceTrigger=PropertyChanged}" Width="180" Margin="0,0,10,0" Tag="Device Name..."/>
+                    
+                    <ComboBox ItemsSource="{Binding DeviceTypes}" SelectedItem="{Binding SelectedDeviceType}" Width="120" Height="38" Margin="0,0,10,0" VerticalContentAlignment="Center"/>
+                    
+                    <Button Content="+ Add Device" Command="{Binding AddDeviceCommand}" Width="120"/>
                 </StackPanel>
             </Border>
 
@@ -41,7 +48,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="50"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="160"/>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
@@ -49,12 +56,18 @@
                                     <TextBlock Grid.Column="0" Text="{Binding Icon}" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                     
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0">
-                                        <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="White"/>
                                         <TextBlock Text="{Binding Status}" Foreground="{Binding StatusColor}" FontSize="12"/>
                                     </StackPanel>
                                     
-                                    <Button Grid.Column="2" Content="Toggle" Command="{Binding ToggleCommand}" Margin="5,0" Padding="10,4"/>
-                                    <Button Grid.Column="3" Content="🗑 Delete" Command="{Binding DataContext.DeleteDeviceCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Background="#EF4444" Margin="5,0" Padding="10,4"/>
+                                    <!-- Temperature Control -->
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="10,0" Visibility="{Binding IsTemperatureControlVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock Text="{Binding Temperature, StringFormat='{}{0}°C'}" HorizontalAlignment="Center" Style="{StaticResource SmallText}"/>
+                                        <Slider Minimum="0" Maximum="30" Value="{Binding Temperature}" IsSnapToTickEnabled="True" TickFrequency="1"/>
+                                    </StackPanel>
+                                    
+                                    <Button Grid.Column="3" Content="{Binding ActionButtonText}" Command="{Binding ToggleCommand}" Margin="5,0" Padding="10,4"/>
+                                    <Button Grid.Column="4" Content="🗑" Command="{Binding DataContext.DeleteDeviceCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Background="#EF4444" Margin="5,0" Padding="10,4"/>
                                 </Grid>
                             </Border>
                         </DataTemplate>

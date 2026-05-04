@@ -46,5 +46,10 @@ namespace SmartHouseApp
         {
             MessageBox.Show("Logs system is active and writing to the Logs/ folder.", "Information");
         }
+
+        private void Settings_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            NavigationService.Instance.NavigateTo(new SettingsView(), "Settings");
+        }
     }
 }

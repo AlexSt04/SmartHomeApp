@@ -43,7 +43,7 @@
                 <Grid Margin="25,0">
                     <TextBlock x:Name="PageTitle" Text="Dashboard" VerticalAlignment="Center" Style="{StaticResource HeadingM}"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                        <TextBlock Text="⚙️ Settings" VerticalAlignment="Center" Cursor="Hand" Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <TextBlock Text="⚙️ Settings" MouseDown="Settings_Click" VerticalAlignment="Center" Cursor="Hand" Foreground="{StaticResource TextSecondaryBrush}"/>
                     </StackPanel>
                 </Grid>
             </Border>

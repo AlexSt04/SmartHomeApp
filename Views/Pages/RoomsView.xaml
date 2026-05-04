@@ -55,13 +55,20 @@
                                     <ColumnDefinition Width="150"/>
                                 </Grid.ColumnDefinitions>
                                 
-                                <TextBlock Grid.Column="0" Text="{Binding Name}" Style="{StaticResource BodyText}" VerticalAlignment="Center" Cursor="Hand">
-                                    <TextBlock.InputBindings>
-                                        <MouseBinding MouseAction="LeftClick" Command="{Binding ViewDetailsCommand}"/>
-                                    </TextBlock.InputBindings>
-                                </TextBlock>
+                                <Grid Grid.Column="0" VerticalAlignment="Center">
+                                    <!-- Display Mode -->
+                                    <TextBlock x:Name="DisplayBlock" Text="{Binding Name}" Style="{StaticResource BodyText}" VerticalAlignment="Center" Cursor="Hand">
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding MouseAction="LeftClick" Command="{Binding ViewDetailsCommand}"/>
+                                        </TextBlock.InputBindings>
+                                    </TextBlock>
+                                    
+                                    <!-- Edit Mode -->
+                                    <TextBox x:Name="EditBox" Text="{Binding TempName, UpdateSourceTrigger=PropertyChanged}" 
+                                             Height="30" Margin="0" Padding="5,2" Visibility="Collapsed"/>
+                                </Grid>
                                 
-                                <TextBlock Grid.Column="1" Text="{Binding DeviceCount}" Style="{StaticResource BodyText}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="{Binding DeviceCount}" Style="{StaticResource BodyText}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
                                 
                                 <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <Ellipse Width="10" Height="10" Fill="{StaticResource StatusActiveBrush}" Margin="0,0,8,0"/>
@@ -69,19 +76,45 @@
                                 </StackPanel>
                                 
                                 <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock Text="✎" Command="{Binding DataContext.EditRoomCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Margin="0,0,20,0" FontSize="18" Cursor="Hand" Foreground="{StaticResource AccentSecondaryBrush}">
-                                        <TextBlock.InputBindings>
-                                            <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.EditRoomCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
-                                        </TextBlock.InputBindings>
-                                    </TextBlock>
-                                    <TextBlock Text="✕" Command="{Binding DataContext.DeleteRoomCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" FontSize="18" Cursor="Hand" Foreground="{StaticResource StatusInactiveBrush}">
-                                        <TextBlock.InputBindings>
-                                            <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.DeleteRoomCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
-                                        </TextBlock.InputBindings>
-                                    </TextBlock>
+                                    <!-- Edit Actions -->
+                                    <StackPanel x:Name="EditActions" Orientation="Horizontal" Visibility="Collapsed">
+                                        <TextBlock Text="💾" Margin="0,0,15,0" FontSize="18" Cursor="Hand" Foreground="{StaticResource StatusActiveBrush}">
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding MouseAction="LeftClick" Command="{Binding SaveEditCommand}"/>
+                                            </TextBlock.InputBindings>
+                                        </TextBlock>
+                                        <TextBlock Text="✕" FontSize="18" Cursor="Hand" Foreground="{StaticResource StatusInactiveBrush}">
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding MouseAction="LeftClick" Command="{Binding CancelEditCommand}"/>
+                                            </TextBlock.InputBindings>
+                                        </TextBlock>
+                                    </StackPanel>
+
+                                    <!-- Standard Actions -->
+                                    <StackPanel x:Name="StandardActions" Orientation="Horizontal">
+                                        <TextBlock Text="✎" Margin="0,0,20,0" FontSize="18" Cursor="Hand" Foreground="{StaticResource AccentSecondaryBrush}">
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding MouseAction="LeftClick" Command="{Binding StartEditCommand}"/>
+                                            </TextBlock.InputBindings>
+                                        </TextBlock>
+                                        <TextBlock Text="✕" FontSize="18" Cursor="Hand" Foreground="{StaticResource StatusInactiveBrush}">
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.DeleteRoomCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                                            </TextBlock.InputBindings>
+                                        </TextBlock>
+                                    </StackPanel>
                                 </StackPanel>
                             </Grid>
                         </Border>
+                        
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                                <Setter TargetName="DisplayBlock" Property="Visibility" Value="Collapsed"/>
+                                <Setter TargetName="EditBox" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="EditActions" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="StandardActions" Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

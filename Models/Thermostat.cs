@@ -1,35 +1,40 @@
+using System;
+
 namespace SmartHouseApp.Models
 {
     public class Thermostat : Device
     {
-        public int Temperature { get; set; }
-        
+        public bool IsRunning { get; private set; }
+        public int Temperature { get; set; } = 22;
+
         public Thermostat(string room) : base("Thermostat", room)
         {
-            Temperature = 22;
         }
 
-        public override bool IsActive => Temperature > 20;  // Example logic
-        public override string GetStatus() => $"{Temperature}°C";
-
-        public override void TurnOn() 
+        public override void TurnOn()
         {
-            // Implementation for turning on thermostat if needed
+            IsRunning = true;
             OnStatusChanged();
         }
 
-        public override void TurnOff() 
+        public override void TurnOff()
         {
-            // Implementation for turning off thermostat if needed
+            IsRunning = false;
             OnStatusChanged();
         }
 
-        public override Device Clone()
+        public override string GetStatus()
         {
-            return new Thermostat(this.Room)
-            {
-                Temperature = this.Temperature
-            };
+            return IsRunning ? $"HEATING ({Temperature}°C)" : $"{Temperature}°C (Standby)";
         }
+
+        public override bool IsActive => IsRunning;
+
+        public override Device Clone() => new Thermostat(Room) 
+        { 
+            Name = this.Name, 
+            IsRunning = this.IsRunning, 
+            Temperature = this.Temperature 
+        };
     }
 }
