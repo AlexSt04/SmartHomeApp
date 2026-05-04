@@ -3,7 +3,7 @@ using SmartHouseApp.Managers;
 using SmartHouseApp.Models;
 using SmartHouseApp.Builders;
 using SmartHouseApp.Patterns.Flyweight;
-using SmartHouseApp.Patterns.Structural.Decorator;
+using SmartHouseApp.Patterns.Decorator;
 using SmartHouseApp.Patterns.Proxy;
 using SmartHouseApp.Views.Pages;
 
