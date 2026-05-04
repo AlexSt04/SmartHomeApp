@@ -1,98 +1,61 @@
-﻿using System.Windows;
+using System.Windows;
 using SmartHouseApp.Managers;
 using SmartHouseApp.Models;
 using SmartHouseApp.Builders;
 using SmartHouseApp.Patterns.Flyweight;
-using SmartHouseApp.Patterns.Decorator;
+using SmartHouseApp.Patterns.Structural.Decorator;
 using SmartHouseApp.Patterns.Proxy;
 using SmartHouseApp.Views.Pages;
 
 namespace SmartHouseApp
 {
-     public partial class MainWindow : Window
-     {
-          private readonly SmartHomeFacade facade;
+    public partial class MainWindow : Window
+    {
+        private readonly SmartHomeFacade facade;
 
-          public MainWindow()
-          {
-               InitializeComponent();
+        public MainWindow()
+        {
+            InitializeComponent();
 
-               facade = new SmartHomeFacade();
+            facade = new SmartHomeFacade();
 
-               // Default page
-               MainContent.Content = new DashboardView();
-          }
+            // Setup default rooms for demo if empty
+            if (SmartHomeManager.Instance.Rooms.Count == 0)
+            {
+                var builder = new RoomBuilder();
+                SmartHomeManager.Instance.AddRoom(builder.CreateRoom("Living Room").AddLight().AddThermostat().Build());
+                SmartHomeManager.Instance.AddRoom(builder.CreateRoom("Kitchen").AddLight().Build());
+                SmartHomeManager.Instance.AddRoom(builder.CreateRoom("Entrance").AddDoorLock().Build());
+            }
 
-          // =========================
-          // NAVIGATION
-          // =========================
+            // Default page
+            NavigateTo(new DashboardView(), "Dashboard");
+        }
 
-          private void Dashboard_Click(object sender, RoutedEventArgs e)
-          {
-               MainContent.Content = new DashboardView();
-          }
+        private void NavigateTo(UIElement page, string title)
+        {
+            MainContent.Content = page;
+            if (PageTitle != null) PageTitle.Text = title;
+        }
 
-          private void Rooms_Click(object sender, RoutedEventArgs e)
-          {
-               MainContent.Content = new RoomsView();
-          }
+        private void Dashboard_Click(object sender, RoutedEventArgs e)
+        {
+            NavigateTo(new DashboardView(), "Dashboard");
+        }
 
-          private void Devices_Click(object sender, RoutedEventArgs e)
-          {
-               MainContent.Content = new DevicesView();
-          }
+        private void Rooms_Click(object sender, RoutedEventArgs e)
+        {
+            NavigateTo(new RoomsView(), "Rooms");
+        }
 
-          private void Logs_Click(object sender, RoutedEventArgs e)
-          {
-               MessageBox.Show("Logs system will be implemented in Lab 6 (Observer + Command).");
-          }
+        private void Devices_Click(object sender, RoutedEventArgs e)
+        {
+            NavigateTo(new DevicesView(), "Devices");
+        }
 
-          // =========================
-          // DEMO ACTIONS (PATTERNS)
-          // =========================
-
-          private void TestPatterns_Click(object sender, RoutedEventArgs e)
-          {
-               // =========================
-               // LAB 3 - BUILDER
-               // =========================
-               var builder = new RoomBuilder();
-
-               var room = builder
-                   .CreateRoom("Living Room")
-                   .AddLight()
-                   .AddThermostat()
-                   .AddDoorLock()
-                   .Build();
-
-               SmartHomeManager.Instance.AddRoom(room);
-
-               // =========================
-               // LAB 5 - FLYWEIGHT
-               // =========================
-               var light = DeviceFlyweightFactory.GetLight("Living Room");
-
-               // =========================
-               // PROXY (SECURITY)
-               // =========================
-               var securedDevice = new DeviceProxy(light, true);
-
-               // =========================
-               // DECORATOR (FEATURE EXTENSION)
-               // =========================
-               var smartDevice = new NotificationDecorator(securedDevice);
-
-               room.AddDevice(smartDevice);
-
-               // =========================
-               // EXECUTION DEMO
-               // =========================
-               smartDevice.TurnOn();
-
-               MessageBox.Show(
-                   $"Room created with {room.Devices.Count} devices",
-                   "Smart House Demo"
-               );
-          }
-     }
+        private void Logs_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Logs system is active and writing to the Logs/ folder.", "Information");
+        }
+    }
 }

@@ -12,11 +12,29 @@ namespace SmartHouseApp.ViewModels
         public string Name => _device.Name;
         public string Room => _device.Room;
         
+        public string Icon => _device switch
+        {
+            Light _ => "💡",
+            Thermostat _ => "🌡️",
+            DoorLock _ => "🔐",
+            _ => "📱"
+        };
+
+        public string StatusColor => _device.IsActive ? "#10B981" : "#EF4444";
+        public string ActionButtonText => _device is DoorLock ? (_device.IsActive ? "Unlock" : "Lock") : "Toggle";
+
         public string Status
         {
             get => _status;
-            set => SetProperty(ref _status, value);
+            set 
+            {
+                if (SetProperty(ref _status, value))
+                {
+                    OnPropertyChanged(nameof(StatusColor));
+                }
+            }
         }
+
         
         public ICommand ToggleCommand { get; }
         
