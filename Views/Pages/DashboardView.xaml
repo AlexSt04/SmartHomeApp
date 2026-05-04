@@ -42,12 +42,12 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Style="{StaticResource CardStyle}" Width="180" Height="140" Margin="0,0,15,15">
+                        <Border Style="{StaticResource CardStyle}" Width="180" MinHeight="160" Margin="0,0,15,15">
                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <TextBlock Text="🏠" FontSize="32" HorizontalAlignment="Center" Margin="0,0,0,10"/>
                                 <TextBlock Text="{Binding Name}" Style="{StaticResource HeadingM}" HorizontalAlignment="Center"/>
                                 <TextBlock Text="{Binding DeviceCount, StringFormat='{}{0} devices'}" Style="{StaticResource SmallText}" HorizontalAlignment="Center"/>
-                                <Button Content="View ➜" Style="{StaticResource SecondaryButton}" Margin="0,10,0,0" Padding="12,4" FontSize="12"/>
+                                <Button Content="View ➜" Command="{Binding ViewDetailsCommand}" Style="{StaticResource SecondaryButton}" Margin="0,10,0,0" Padding="15,6" FontSize="12"/>
                             </StackPanel>
                         </Border>
                     </DataTemplate>

@@ -1,15 +1,18 @@
 using SmartHouseApp.Models;
+using SmartHouseApp.Utils;
+using SmartHouseApp.Services;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 
 namespace SmartHouseApp.ViewModels
 {
     public class RoomViewModel : ViewModelBase
     {
-        private readonly Room _room;
+        public Room Room { get; }
         private ObservableCollection<DeviceViewModel> _devices;
         
-        public string Name => _room.Name;
+        public string Name => Room.Name;
         
         public ObservableCollection<DeviceViewModel> Devices
         {
@@ -17,14 +20,19 @@ namespace SmartHouseApp.ViewModels
             set => SetProperty(ref _devices, value);
         }
         
-        public int DeviceCount => _room.Devices.Count;
+        public int DeviceCount => Room.Devices.Count;
         
+        public ICommand ViewDetailsCommand { get; }
+
         public RoomViewModel(Room room)
         {
-            _room = room;
+            Room = room;
             _devices = new ObservableCollection<DeviceViewModel>(
-                _room.Devices.Select(d => new DeviceViewModel(d))
+                Room.Devices.Select(d => new DeviceViewModel(d))
             );
+
+            ViewDetailsCommand = new RelayCommand(() => 
+                NavigationService.Instance.NavigateTo(new Views.Pages.RoomDetailsView(Room), Room.Name));
         }
     }
 }

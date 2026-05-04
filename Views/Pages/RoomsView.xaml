@@ -33,7 +33,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="150"/>
                         <ColumnDefinition Width="150"/>
-                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="150"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="Room Name" Style="{StaticResource HeadingM}"/>
                     <TextBlock Grid.Column="1" Text="Devices" Style="{StaticResource HeadingM}" HorizontalAlignment="Center"/>
@@ -52,10 +52,15 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="150"/>
                                     <ColumnDefinition Width="150"/>
-                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="150"/>
                                 </Grid.ColumnDefinitions>
                                 
-                                <TextBlock Grid.Column="0" Text="{Binding Name}" Style="{StaticResource BodyText}" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="0" Text="{Binding Name}" Style="{StaticResource BodyText}" VerticalAlignment="Center" Cursor="Hand">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding MouseAction="LeftClick" Command="{Binding ViewDetailsCommand}"/>
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
+                                
                                 <TextBlock Grid.Column="1" Text="{Binding DeviceCount}" Style="{StaticResource BodyText}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 
                                 <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -64,8 +69,16 @@
                                 </StackPanel>
                                 
                                 <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock Text="✎" Margin="0,0,15,0" FontSize="18" Cursor="Hand" Foreground="{StaticResource AccentSecondaryBrush}"/>
-                                    <TextBlock Text="✕" FontSize="18" Cursor="Hand" Foreground="{StaticResource StatusInactiveBrush}"/>
+                                    <TextBlock Text="✎" Command="{Binding DataContext.EditRoomCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Margin="0,0,20,0" FontSize="18" Cursor="Hand" Foreground="{StaticResource AccentSecondaryBrush}">
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.EditRoomCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                                        </TextBlock.InputBindings>
+                                    </TextBlock>
+                                    <TextBlock Text="✕" Command="{Binding DataContext.DeleteRoomCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" FontSize="18" Cursor="Hand" Foreground="{StaticResource StatusInactiveBrush}">
+                                        <TextBlock.InputBindings>
+                                            <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.DeleteRoomCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                                        </TextBlock.InputBindings>
+                                    </TextBlock>
                                 </StackPanel>
                             </Grid>
                         </Border>

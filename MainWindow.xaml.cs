@@ -1,23 +1,18 @@
 using System.Windows;
 using SmartHouseApp.Managers;
-using SmartHouseApp.Models;
 using SmartHouseApp.Builders;
-using SmartHouseApp.Patterns.Flyweight;
-using SmartHouseApp.Patterns.Decorator;
-using SmartHouseApp.Patterns.Proxy;
+using SmartHouseApp.Services;
 using SmartHouseApp.Views.Pages;
 
 namespace SmartHouseApp
 {
     public partial class MainWindow : Window
     {
-        private readonly SmartHomeFacade facade;
-
         public MainWindow()
         {
             InitializeComponent();
 
-            facade = new SmartHomeFacade();
+            NavigationService.Instance.Initialize(MainContent, PageTitle);
 
             // Setup default rooms for demo if empty
             if (SmartHomeManager.Instance.Rooms.Count == 0)
@@ -29,28 +24,22 @@ namespace SmartHouseApp
             }
 
             // Default page
-            NavigateTo(new DashboardView(), "Dashboard");
-        }
-
-        private void NavigateTo(UIElement page, string title)
-        {
-            MainContent.Content = page;
-            if (PageTitle != null) PageTitle.Text = title;
+            NavigationService.Instance.NavigateTo(new DashboardView(), "Dashboard");
         }
 
         private void Dashboard_Click(object sender, RoutedEventArgs e)
         {
-            NavigateTo(new DashboardView(), "Dashboard");
+            NavigationService.Instance.NavigateTo(new DashboardView(), "Dashboard");
         }
 
         private void Rooms_Click(object sender, RoutedEventArgs e)
         {
-            NavigateTo(new RoomsView(), "Rooms");
+            NavigationService.Instance.NavigateTo(new RoomsView(), "Rooms");
         }
 
         private void Devices_Click(object sender, RoutedEventArgs e)
         {
-            NavigateTo(new DevicesView(), "Devices");
+            NavigationService.Instance.NavigateTo(new DevicesView(), "Devices");
         }
 
         private void Logs_Click(object sender, RoutedEventArgs e)
