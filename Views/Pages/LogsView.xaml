@@ -1,0 +1,167 @@
+﻿<UserControl x:Class="SmartHouseApp.Views.Pages.LogsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d">
+
+     <Grid>
+          <StackPanel>
+
+               <!-- STATS BAR -->
+               <UniformGrid Columns="4" Margin="0,0,0,20">
+                    <Border Style="{StaticResource CardStyle}" Margin="0,0,8,0">
+                         <StackPanel>
+                              <TextBlock Text="Total Entries" Style="{StaticResource SmallText}"/>
+                              <TextBlock Text="{Binding TotalCount}" Style="{StaticResource HeadingXL}"
+                                   Foreground="{StaticResource AccentPrimaryBrush}"/>
+                         </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource CardStyle}" Margin="4,0">
+                         <StackPanel>
+                              <TextBlock Text="Errors" Style="{StaticResource SmallText}"/>
+                              <TextBlock Text="{Binding ErrorCount}" Style="{StaticResource HeadingXL}"
+                                   Foreground="{StaticResource StatusInactiveBrush}"/>
+                         </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource CardStyle}" Margin="4,0">
+                         <StackPanel>
+                              <TextBlock Text="Warnings" Style="{StaticResource SmallText}"/>
+                              <TextBlock Text="{Binding WarningCount}" Style="{StaticResource HeadingXL}"
+                                   Foreground="{StaticResource StatusWarningBrush}"/>
+                         </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource CardStyle}" Margin="8,0,0,0">
+                         <StackPanel>
+                              <TextBlock Text="Device Events" Style="{StaticResource SmallText}"/>
+                              <TextBlock Text="{Binding DeviceCount}" Style="{StaticResource HeadingXL}"
+                                   Foreground="{StaticResource AccentSecondaryBrush}"/>
+                         </StackPanel>
+                    </Border>
+               </UniformGrid>
+
+               <!-- TOOLBAR -->
+               <Border Style="{StaticResource CardStyle}" Margin="0,0,0,15">
+                    <Grid>
+                         <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="*"/>
+                              <ColumnDefinition Width="160"/>
+                              <ColumnDefinition Width="Auto"/>
+                         </Grid.ColumnDefinitions>
+
+                         <TextBox Grid.Column="0"
+                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,0,15,0"/>
+
+                         <ComboBox Grid.Column="1"
+                              ItemsSource="{Binding Levels}"
+                              SelectedItem="{Binding SelectedLevel}"
+                              Height="38"
+                              VerticalContentAlignment="Center"
+                              Foreground="#1E1E2E"
+                              Background="#1E1E2E"
+                              Margin="0,0,15,0"/>
+
+                         <StackPanel Grid.Column="2" Orientation="Horizontal">
+                              <Button Content="Refresh" Command="{Binding RefreshCommand}"
+                                Margin="0,0,10,0" Padding="15,8"/>
+                              <Button Content="Export" Command="{Binding ExportCommand}"
+                                Style="{StaticResource SecondaryButton}"
+                                Margin="0,0,10,0" Padding="15,8"/>
+                              <Button Content="Clear" Command="{Binding ClearLogsCommand}"
+                                Background="#EF4444" Foreground="White" Padding="15,8"
+                                BorderThickness="0" Cursor="Hand">
+                                   <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                             <Border Background="{TemplateBinding Background}" CornerRadius="6"
+                                            Padding="{TemplateBinding Padding}">
+                                                  <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                             </Border>
+                                        </ControlTemplate>
+                                   </Button.Template>
+                              </Button>
+                         </StackPanel>
+                    </Grid>
+               </Border>
+
+               <!-- LOG FILE PATH -->
+               <TextBlock Text="{Binding LogFilePath, StringFormat='Log file: {0}'}"
+                       Style="{StaticResource SmallText}" Margin="0,0,0,10"/>
+
+               <!-- TABLE HEADER -->
+               <Border Background="#1A1A2E" Padding="15,8" CornerRadius="6,6,0,0"
+                    BorderBrush="{StaticResource BorderBrush}" BorderThickness="1,1,1,0">
+                    <Grid>
+                         <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="170"/>
+                              <ColumnDefinition Width="90"/>
+                              <ColumnDefinition Width="*"/>
+                         </Grid.ColumnDefinitions>
+                         <TextBlock Grid.Column="0" Text="TIMESTAMP" Style="{StaticResource SmallText}" FontWeight="Bold"/>
+                         <TextBlock Grid.Column="1" Text="LEVEL"     Style="{StaticResource SmallText}" FontWeight="Bold"/>
+                         <TextBlock Grid.Column="2" Text="MESSAGE"   Style="{StaticResource SmallText}" FontWeight="Bold"/>
+                    </Grid>
+               </Border>
+
+               <!-- LOG LIST -->
+               <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1,0,1,1" CornerRadius="0,0,6,6">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Height="380">
+                         <ItemsControl ItemsSource="{Binding FilteredEntries}">
+                              <ItemsControl.ItemTemplate>
+                                   <DataTemplate>
+                                        <Border Background="{Binding LevelBackground}"
+                                        BorderBrush="#2A2A3E" BorderThickness="0,0,0,1"
+                                        Padding="15,9">
+                                             <Grid>
+                                                  <Grid.ColumnDefinitions>
+                                                       <ColumnDefinition Width="170"/>
+                                                       <ColumnDefinition Width="90"/>
+                                                       <ColumnDefinition Width="*"/>
+                                                  </Grid.ColumnDefinitions>
+
+                                                  <TextBlock Grid.Column="0"
+                                                   Text="{Binding Timestamp}"
+                                                   Foreground="#A0A0B0"
+                                                   FontSize="11"
+                                                   FontFamily="Consolas"
+                                                   VerticalAlignment="Center"/>
+
+                                                  <Border Grid.Column="1"
+                                                Background="{Binding LevelBackground}"
+                                                BorderBrush="{Binding LevelColor}"
+                                                BorderThickness="1"
+                                                CornerRadius="4"
+                                                Padding="6,2"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center">
+                                                       <TextBlock Text="{Binding Level}"
+                                                       Foreground="{Binding LevelColor}"
+                                                       FontSize="10"
+                                                       FontWeight="Bold"
+                                                       FontFamily="Consolas"/>
+                                                  </Border>
+
+                                                  <TextBlock Grid.Column="2"
+                                                   Text="{Binding Message}"
+                                                   Foreground="#E0E0E0"
+                                                   FontSize="12"
+                                                   FontFamily="Consolas"
+                                                   VerticalAlignment="Center"
+                                                   TextWrapping="Wrap"/>
+                                             </Grid>
+                                        </Border>
+                                   </DataTemplate>
+                              </ItemsControl.ItemTemplate>
+                         </ItemsControl>
+                    </ScrollViewer>
+               </Border>
+
+               <!-- FOOTER -->
+               <TextBlock Text="{Binding FilteredEntries.Count, StringFormat='Showing {0} entries'}"
+                       Style="{StaticResource SmallText}"
+                       HorizontalAlignment="Right"
+                       Margin="0,8,0,0"/>
+
+          </StackPanel>
+     </Grid>
+</UserControl>

@@ -1,92 +1,106 @@
+﻿using SmartHouseApp.Managers;
 using SmartHouseApp.Models;
-using SmartHouseApp.Utils;
 using SmartHouseApp.Services;
-using System.Collections.ObjectModel;
+using SmartHouseApp.Utils;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-using System.Windows;
 
 namespace SmartHouseApp.ViewModels
 {
-    public class RoomDetailsViewModel : ViewModelBase
-    {
-        private readonly Room _room;
-        private ObservableCollection<DeviceViewModel> _devices;
+     public class RoomDetailsViewModel : ViewModelBase
+     {
+          private readonly Room _room;
+          private ObservableCollection<DeviceViewModel> _devices = new();
 
-        public string Name => _room.Name;
-        
-        public ObservableCollection<DeviceViewModel> Devices
+          public string Name => _room.Name;
+
+          public ObservableCollection<DeviceViewModel> Devices
+          {
+               get => _devices;
+               set => SetProperty(ref _devices, value);
+          }
+
+          public ICommand AddDeviceCommand { get; }
+          public ICommand DeleteDeviceCommand { get; }
+          public ICommand BackCommand { get; }
+
+          private string _newDeviceName = "My Device";
+          public string NewDeviceName
+          {
+               get => _newDeviceName;
+               set => SetProperty(ref _newDeviceName, value);
+          }
+
+          public List<string> DeviceTypes { get; } = new()
         {
-            get => _devices;
-            set => SetProperty(ref _devices, value);
-        }
+            "Light", "Thermostat", "Door Lock", "Smart TV", "Air Conditioner"
+        };
 
-        public ICommand AddDeviceCommand { get; }
-        public ICommand DeleteDeviceCommand { get; }
-        public ICommand BackCommand { get; }
+          private string _selectedDeviceType = "Light";
+          public string SelectedDeviceType
+          {
+               get => _selectedDeviceType;
+               set => SetProperty(ref _selectedDeviceType, value);
+          }
 
-        private string _newDeviceName = "My Device";
-        public string NewDeviceName
-        {
-            get => _newDeviceName;
-            set => SetProperty(ref _newDeviceName, value);
-        }
+          public RoomDetailsViewModel(Room room)
+          {
+               _room = room;
+               LoadDevices();
 
-        public List<string> DeviceTypes { get; } = new List<string> { "Light", "Thermostat", "Door Lock", "Smart TV", "Air Conditioner" };
+               AddDeviceCommand = new RelayCommand(AddDeviceAction);
+               DeleteDeviceCommand = new RelayCommand<DeviceViewModel>(DeleteDevice);
+               BackCommand = new RelayCommand(() =>
+                   NavigationService.Instance.NavigateTo(new Views.Pages.DashboardView(), "Dashboard"));
+          }
 
-        private string _selectedDeviceType = "Light";
-        public string SelectedDeviceType
-        {
-            get => _selectedDeviceType;
-            set => SetProperty(ref _selectedDeviceType, value);
-        }
+          private void LoadDevices()
+          {
+               Devices = new ObservableCollection<DeviceViewModel>(
+                   _room.Devices.Select(d => new DeviceViewModel(d))
+               );
+          }
 
-        public RoomDetailsViewModel(Room room)
-        {
-            _room = room;
-            LoadDevices();
+          private void AddDeviceAction()
+          {
+               Device? newDevice = SelectedDeviceType switch
+               {
+                    "Light" => new Light(_room.Name) { Name = NewDeviceName },
+                    "Thermostat" => new Thermostat(_room.Name) { Name = NewDeviceName },
+                    "Door Lock" => new DoorLock(_room.Name) { Name = NewDeviceName },
+                    "Smart TV" => new SmartTV(_room.Name) { Name = NewDeviceName },
+                    "Air Conditioner" => new AirConditioner(_room.Name) { Name = NewDeviceName },
+                    _ => null
+               };
 
-            AddDeviceCommand = new RelayCommand(AddDeviceAction);
-            DeleteDeviceCommand = new RelayCommand<DeviceViewModel>(DeleteDevice);
-            BackCommand = new RelayCommand(() => NavigationService.Instance.NavigateTo(new Views.Pages.DashboardView(), "Dashboard"));
-        }
+               if (newDevice != null)
+               {
+                    _room.AddDevice(newDevice);
 
-        private void LoadDevices()
-        {
-            Devices = new ObservableCollection<DeviceViewModel>(
-                _room.Devices.Select(d => new DeviceViewModel(d))
-            );
-        }
+                    // ✅ Salvează camera actualizată în DB
+                    ServiceLocator.Database.UpsertRoom(_room);
+                    ServiceLocator.Logger.LogDeviceAction(newDevice.Name, _room.Name, "Device added to room");
 
-        private void AddDeviceAction()
-        {
-            Device newDevice = SelectedDeviceType switch
-            {
-                "Light" => new Light(_room.Name) { Name = NewDeviceName },
-                "Thermostat" => new Thermostat(_room.Name) { Name = NewDeviceName },
-                "Door Lock" => new DoorLock(_room.Name) { Name = NewDeviceName },
-                "Smart TV" => new SmartTV(_room.Name) { Name = NewDeviceName },
-                "Air Conditioner" => new AirConditioner(_room.Name) { Name = NewDeviceName },
-                _ => null
-            };
+                    NewDeviceName = "My Device";
+                    LoadDevices();
+               }
+          }
 
-            if (newDevice != null)
-            {
-                _room.AddDevice(newDevice);
-                NewDeviceName = "My Device"; // Reset
-                LoadDevices();
-            }
-        }
+          private void DeleteDevice(DeviceViewModel deviceVm)
+          {
+               var device = _room.Devices.FirstOrDefault(d => d.Name == deviceVm.Name);
+               if (device != null)
+               {
+                    _room.Devices.Remove(device);
 
-        private void DeleteDevice(DeviceViewModel deviceVm)
-        {
-            var device = _room.Devices.FirstOrDefault(d => d.Name == deviceVm.Name);
-            if (device != null)
-            {
-                _room.Devices.Remove(device);
-                LoadDevices();
-            }
-        }
-    }
+                    // ✅ Salvează camera actualizată în DB
+                    ServiceLocator.Database.UpsertRoom(_room);
+                    ServiceLocator.Logger.LogDeviceAction(device.Name, _room.Name, "Device removed from room");
+
+                    LoadDevices();
+               }
+          }
+     }
 }

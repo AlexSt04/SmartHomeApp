@@ -3,47 +3,115 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    
-    <Grid>
-        <StackPanel MaxWidth="600" HorizontalAlignment="Left">
-            <TextBlock Text="General Settings" Style="{StaticResource HeadingL}" Margin="0,0,0,25"/>
-            
-            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
-                <StackPanel>
-                    <TextBlock Text="System Configuration" Style="{StaticResource HeadingM}" Margin="0,0,0,15"/>
-                    
-                    <Grid Margin="0,5">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="House Name" VerticalAlignment="Center" Foreground="White"/>
-                        <TextBox Grid.Column="1" Text="{Binding SystemName}" Tag="Enter house name..."/>
-                    </Grid>
-                    
-                    <Grid Margin="0,15">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Notifications" VerticalAlignment="Center" Foreground="White"/>
-                        <CheckBox Grid.Column="1" IsChecked="{Binding NotificationsEnabled}" Content="Enable push notifications" Foreground="White" VerticalAlignment="Center"/>
-                    </Grid>
-                </StackPanel>
-            </Border>
+             mc:Ignorable="d">
 
-            <TextBlock Text="Maintenance" Style="{StaticResource HeadingL}" Margin="0,10,0,15"/>
-            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,30">
-                <StackPanel>
-                    <TextBlock Text="Database &amp; Logs" Style="{StaticResource HeadingM}" Margin="0,0,0,15"/>
-                    <Button Content="Clear System Logs" Command="{Binding ClearLogsCommand}" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left" Padding="20,10"/>
-                    <TextBlock Text="Current log size: 1.2 MB" Style="{StaticResource SmallText}" Margin="0,10,0,0"/>
-                </StackPanel>
-            </Border>
-            
-            <Button Content="💾 Save All Changes" Command="{Binding SaveCommand}" Width="200" HorizontalAlignment="Left" Padding="0,15"/>
-        </StackPanel>
-    </Grid>
+     <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <StackPanel MaxWidth="650" HorizontalAlignment="Left">
+
+               <!-- ─── General Settings ─── -->
+               <TextBlock Text="General Settings" Style="{StaticResource HeadingL}" Margin="0,0,0,15"/>
+               <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
+                    <StackPanel>
+                         <TextBlock Text="System Configuration" Style="{StaticResource HeadingM}" Margin="0,0,0,15"/>
+                         <Grid Margin="0,5">
+                              <Grid.ColumnDefinitions>
+                                   <ColumnDefinition Width="160"/>
+                                   <ColumnDefinition Width="*"/>
+                              </Grid.ColumnDefinitions>
+                              <TextBlock Text="House Name" VerticalAlignment="Center" Foreground="White"/>
+                              <TextBox Grid.Column="1" Text="{Binding SystemName}" Tag="Enter house name..."/>
+                         </Grid>
+                         <Grid Margin="0,15">
+                              <Grid.ColumnDefinitions>
+                                   <ColumnDefinition Width="160"/>
+                                   <ColumnDefinition Width="*"/>
+                              </Grid.ColumnDefinitions>
+                              <TextBlock Text="Notifications" VerticalAlignment="Center" Foreground="White"/>
+                              <CheckBox Grid.Column="1" IsChecked="{Binding NotificationsEnabled}"
+                                  Content="Enable push notifications" Foreground="White" VerticalAlignment="Center"/>
+                         </Grid>
+                    </StackPanel>
+               </Border>
+
+               <!-- ─── Database Info ─── -->
+               <TextBlock Text="Database (LiteDB)" Style="{StaticResource HeadingL}" Margin="0,0,0,15"/>
+               <Border Style="{StaticResource CardStyle}" Margin="0,0,0,20">
+                    <StackPanel>
+                         <TextBlock Text="Embedded NoSQL Database" Style="{StaticResource HeadingM}" Margin="0,0,0,15"/>
+
+                         <Grid Margin="0,5">
+                              <Grid.ColumnDefinitions>
+                                   <ColumnDefinition Width="130"/>
+                                   <ColumnDefinition Width="*"/>
+                              </Grid.ColumnDefinitions>
+                              <TextBlock Text="Location" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Top"/>
+                              <TextBlock Grid.Column="1" Text="{Binding DatabasePath}"
+                                   Foreground="#10B981" FontSize="11" FontFamily="Consolas"
+                                   TextWrapping="Wrap"/>
+                         </Grid>
+
+                         <Grid Margin="0,10">
+                              <Grid.ColumnDefinitions>
+                                   <ColumnDefinition Width="130"/>
+                                   <ColumnDefinition Width="*"/>
+                              </Grid.ColumnDefinitions>
+                              <TextBlock Text="Size on Disk" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                              <TextBlock Grid.Column="1" Text="{Binding DatabaseSize}"
+                                   Foreground="White" VerticalAlignment="Center"/>
+                         </Grid>
+
+                         <Button Content="⚠️ Reset Database" Command="{Binding ResetDatabaseCommand}"
+                            Background="#7F1D1D" Foreground="White"
+                            HorizontalAlignment="Left" Padding="20,10" Margin="0,10,0,0"
+                            BorderThickness="0" Cursor="Hand">
+                              <Button.Template>
+                                   <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="6"
+                                        Padding="{TemplateBinding Padding}">
+                                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                   </ControlTemplate>
+                              </Button.Template>
+                         </Button>
+                         <TextBlock Text="⚠️ This permanently deletes all rooms and devices from the database."
+                               Style="{StaticResource SmallText}" Foreground="#F87171" Margin="0,6,0,0"/>
+                    </StackPanel>
+               </Border>
+
+               <!-- ─── Logs Maintenance ─── -->
+               <TextBlock Text="Maintenance" Style="{StaticResource HeadingL}" Margin="0,0,0,15"/>
+               <Border Style="{StaticResource CardStyle}" Margin="0,0,0,30">
+                    <StackPanel>
+                         <TextBlock Text="System Logs" Style="{StaticResource HeadingM}" Margin="0,0,0,15"/>
+
+                         <Grid Margin="0,5">
+                              <Grid.ColumnDefinitions>
+                                   <ColumnDefinition Width="130"/>
+                                   <ColumnDefinition Width="*"/>
+                              </Grid.ColumnDefinitions>
+                              <TextBlock Text="Logs Folder" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Top"/>
+                              <TextBlock Grid.Column="1" Text="{Binding LogsPath}"
+                                   Foreground="#A0A0B0" FontSize="11" FontFamily="Consolas"
+                                   TextWrapping="Wrap"/>
+                         </Grid>
+
+                         <Grid Margin="0,10">
+                              <Grid.ColumnDefinitions>
+                                   <ColumnDefinition Width="130"/>
+                                   <ColumnDefinition Width="*"/>
+                              </Grid.ColumnDefinitions>
+                              <TextBlock Text="Total Log Size" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                              <TextBlock Grid.Column="1" Text="{Binding LogsSize}" Foreground="White" VerticalAlignment="Center"/>
+                         </Grid>
+
+                         <Button Content="🗑 Clear All Logs" Command="{Binding ClearLogsCommand}"
+                            Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left" Padding="20,10" Margin="0,10,0,0"/>
+                    </StackPanel>
+               </Border>
+
+               <!-- ─── Save Button ─── -->
+               <Button Content="💾 Save All Changes" Command="{Binding SaveCommand}"
+                    Width="220" HorizontalAlignment="Left" Padding="0,15"/>
+          </StackPanel>
+     </ScrollViewer>
 </UserControl>
