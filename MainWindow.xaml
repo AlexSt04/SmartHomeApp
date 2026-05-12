@@ -26,7 +26,9 @@
                     <Button Content="📊 Dashboard" Click="Dashboard_Click" Style="{StaticResource {x:Type Button}}" Margin="0,5" HorizontalContentAlignment="Left" Padding="20,12"/>
                     <Button Content="🏠 Rooms" Click="Rooms_Click" Style="{StaticResource {x:Type Button}}" Margin="0,5" HorizontalContentAlignment="Left" Padding="20,12"/>
                     <Button Content="⚡ Devices" Click="Devices_Click" Style="{StaticResource {x:Type Button}}" Margin="0,5" HorizontalContentAlignment="Left" Padding="20,12"/>
+                    <Button Content="🎭 Scenes" Click="Scenes_Click" Margin="0,5" HorizontalContentAlignment="Left" Padding="20,12"/>
                     <Button Content="📋 Logs" Click="Logs_Click" Style="{StaticResource {x:Type Button}}" Margin="0,5" HorizontalContentAlignment="Left" Padding="20,12"/>
+                     
                 </StackPanel>
             </StackPanel>
         </Border>

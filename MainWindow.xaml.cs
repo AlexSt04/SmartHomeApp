@@ -61,5 +61,12 @@ namespace SmartHouseApp
 
           private void Settings_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
               => NavigationService.Instance.NavigateTo(new SettingsView(), "Settings");
+
+          // ✅ Scenes
+          private void Scenes_Click(object sender, RoutedEventArgs e)
+              => NavigationService.Instance.NavigateTo(new ScenesView(), "Scenes & Automation");
+
+          
+
      }
 }
